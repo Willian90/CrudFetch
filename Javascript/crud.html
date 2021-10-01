@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD</title>
+</head>
+<body>
+    <section class="crud">
+        <article>
+            <h2 class="crud-title">AGREGAR USUARIOS</h2>
+            <form action="" class="crud-form">
+                <input type="text" name="name" data-name="name" placeholder="name" required>
+                <br>
+               <input type="text" name="profesion" data-name="profesion" placeholder="Profesion" required>
+               <br>
+               <input type="hidden" name="id">
+               <input type="submit" value="enviar" class="enviar">
+            </form>
+        </article>
+        <article>
+            <h2>USERS</h2>
+            <table class="crud-table">
+                <thead>
+                    <th>ID</th>
+                    <th>NOMBRE</th>
+                    <th>PROFESION</th>
+                    <th>ACCIONES</th>
+                </thead>
+                <tbody>
+                    <template>
+                        <tr>
+                            <td class="id" >1</td>
+                            <td class="name">Carlos</td>
+                            <td class="profesion">Doctor</td>
+                            <td>
+                                <button class="editar">Editar</button>
+                                <button class="eliminar">Eliminar</button>
+                            </td>
+                            </tr>
+                    </template>
+                </tbody>
+            </table>
+        </article>
+    </section>
+
+    <script>
+        const d = document,
+        $form = d.querySelector(".crud-form"),
+        $title = d.querySelector(".crud-title"),
+        $table = d.querySelector(".crud-table"),
+        $template = d.querySelector("template").content,
+        $fragment = d.createDocumentFragment()
+
+        
+
+        /* const getAll = async()=>{
+            try {
+                let res = await fetch("http://localhost:4000/Users"),
+                json = await res.json()
+                console.log(json);
+
+                const $tbody=d.querySelector("tbody");
+
+                json.map(el=>{
+                
+                   $template.querySelector(".name").textContent = el.name;
+                   $template.querySelector(".profesion").textContent = el.profesion;
+                   $template.querySelector(".id").textContent = el.id;
+                   $template.querySelector(".editar").dataset.id = el.id;
+                   $template.querySelector(".editar").dataset.name = el.name;
+                   $template.querySelector(".editar").dataset.profesion = el.profesion;
+                   $template.querySelector(".eliminar").dataset.id = el.id;
+
+                    console.log(el.name);
+                   $clone = d.importNode($template, true);
+                   $fragment.appendChild($clone);
+                })
+
+                //$tbody.innerHTML=result;
+                $tbody.appendChild($fragment);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        d.addEventListener("DOMContentLoaded", getAll);
+
+        // INSERT DATA FROM FORM TO API
+        d.addEventListener("submit",async e=>{
+            e.preventDefault();
+            //console.log(e.target.id.value);
+            if(!e.target.id.value){
+                try {
+                let options = {
+                    method:"POST",
+                    headers:{
+                        "Content-Type" : "application/json"
+                    },
+                    body:JSON.stringify({
+                        name:e.target.name.value,
+                        profesion:e.target.profesion.value
+                    })
+                }
+                let result = await fetch("http://localhost:4000/users", options)
+                let json = await result.json();
+
+                if (json){
+                    alert("insertó un nuevo registro");
+                }
+            } catch (error) {
+                alert(error);
+            }
+            } else{
+                
+                try {
+                    id=e.target.id.value;
+
+                let options = {
+                    method:"PUT",
+                    headers:{
+                        "Content-Type" : "application/json"
+                    },
+                    body:JSON.stringify({
+                        name:e.target.name.value,
+                        profesion:e.target.profesion.value
+                    })
+                }
+                let result = await fetch(`http://localhost:4000/users/${id}`, options)
+                let json = await result.json();
+
+                if (json){
+                    alert("Editó un nuevo registro");
+                }
+            } catch (error) {
+                alert(error);
+            }
+        }
+        
+    })
+
+        d.addEventListener("click",async e=>{
+            if(e.target.matches(".editar")){
+
+                $title.textContent = "EDITAR USUARIOS";
+                $form.name.value = e.target.dataset.name;
+                $form.profesion.value = e.target.dataset.profesion;
+                $form.id.value = e.target.dataset.id;
+            }
+            if(e.target.matches(".eliminar")){
+                id = e.target.dataset.id;
+                console.log(id);
+                try {
+                    let options = {
+                    method:"DELETE",
+                    headers:{
+                        "Content-Type" : "application/json"
+                    }
+                }
+
+                    let eliminar = confirm("Desea ELiminar el registro " + id);
+                    if(eliminar){
+                        let resultado = await fetch(`http://localhost:4000/users/${id}`, options);
+                        let json = await resultado.json();
+                        if(json) alert("Registro Eliminado exitosamente");
+                    }
+                    
+
+                } catch (error) {
+                    
+                }
+            }
+        }) */
+
+        const getAll = async()=>{
+            try {
+                let resultado =await fetch("http://localhost:4000/users"),
+                json = await resultado.json();
+
+                json.map(el => {
+                    $template.querySelector(".id").textContent = el.id;
+                    $template.querySelector(".name").textContent = el.name;
+                    $template.querySelector(".profesion").textContent = el.profesion;
+                    $template.querySelector(".editar").dataset.id = el.id;
+                    $template.querySelector(".editar").dataset.name = el.name;
+                    $template.querySelector(".editar").dataset.profesion = el.profesion;
+                    $template.querySelector(".eliminar").dataset.id = el.id;
+
+                    let $clone = d.importNode($template, true);
+
+                    $fragment.appendChild($clone);
+                });
+
+                let $tbody = d.querySelector("tbody");
+                $tbody.appendChild($fragment);
+                
+            } catch (err) {
+               let message = err.statusText || "Ocurrió un problema";
+              $table.insertAdjacentHTML("afterend",`<b> ${err.statusText} : ${message} </b>`); 
+            }
+        }
+
+        d.addEventListener("DOMContentLoaded",getAll);
+
+        d.addEventListener("submit", async e=>{
+            e.preventDefault();
+            /* let options = {
+                    method:"POST",
+                    headers:{
+                        "Content-Type" : "application/json"
+                    },
+                    body:JSON.stringify({
+                        name:e.target.name.value,
+                        profesion:e.target.profesion.value
+                    })
+                } */
+
+            if (!e.target.id.value) {
+                
+                console.log(e.target.profesion.value);
+                try {
+                    let options = {
+                    method: "POST",
+                    headers:{
+                        "Content-Type" : "application/json"
+                    },
+                    body:JSON.stringify({
+                        name:e.target.name.value,
+                        profesion:e.target.profesion.value
+                    })     
+                }
+
+                let resultado = await fetch("http://localhost:4000/users", options);
+                let json = await resultado.json();
+                    if (resultado.ok){
+                        alert("Insertó un nuevo registro");
+                    }
+                } catch (err) {
+                    console.log(err);
+                }
+                
+            } else {
+                try {
+                    let id=e.target.id.value;
+
+                    let options = {
+                        method: "PUT",
+                        headers:{
+                            "Content-Type" :"application/json"
+                        },
+                        body:JSON.stringify({
+                            name: e.target.name.value,
+                            profesion: e.target.profesion.value
+                        })
+                    }
+
+                    let resultado=await fetch(`http://localhost:4000/users/${id}`,options);
+                    let json = await resultado.json()
+
+                    if(resultado.ok){
+                        alert("Registro Actualizado Exitosamente");
+                    }
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        })
+
+        d.addEventListener("click", async e=>{
+            if(e.target.matches(".editar")){
+                $title.textContent = "EDITAR USERS";
+                $form.id.value = e.target.dataset.id;      
+                $form.name.value = e.target.dataset.name;   
+                $form.profesion.value = e.target.dataset.profesion;
+                $form.name.focus();           
+             }
+
+            if(e.target.matches(".eliminar")){
+                try {
+
+                    let id = e.target.dataset.id;
+
+                    let options ={
+                        method: "DELETE",
+                        headers:{
+                            "Content-Type" :"application/json"
+                        }
+                    }
+
+                    let isDelete = confirm("Deseas eliminar el registro  "+id);
+
+                    if(isDelete){
+                    let resultado=await fetch(`http://localhost:4000/users/${id}`,options);
+                    let json = await resultado.json();
+
+                    if (resultado.ok){
+                        alert("Registro Eliminado")
+                    }
+                }
+
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+
+
+        })
+    </script>
+    
+</body>
+</html>
